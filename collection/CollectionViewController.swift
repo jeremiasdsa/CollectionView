@@ -11,6 +11,9 @@ import UIKit
 private let reuseIdentifier = "Cell"
 
 class CollectionViewController: UICollectionViewController {
+    
+    
+    let array = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,8 +22,10 @@ class CollectionViewController: UICollectionViewController {
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
+        let nib = UINib(nibName: "CollectionCell", bundle:nil)
+        self.collectionView!.register(nib, forCellWithReuseIdentifier: reuseIdentifier)
+        
         // Do any additional setup after loading the view.
     }
 
@@ -43,23 +48,40 @@ class CollectionViewController: UICollectionViewController {
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 2
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return array.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CollectionCell
+        
+       // let cell = collectionView.dequeueReusableSupplementaryView(ofKind: "CollectionCell", withReuseIdentifier: "Cell", for: indexPath) as! CollectionCell
     
         // Configure the cell
+        cell.isBorderYellow = false
     
         return cell
     }
 
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath)
+        
+        let cell = collectionView.cellForItem(at: indexPath) as! CollectionCell
+        cell.isBorderYellow = true
+        
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! CollectionCell
+        cell.isBorderYellow = false
+    }
+    
+    
     // MARK: UICollectionViewDelegate
 
     /*
@@ -69,12 +91,13 @@ class CollectionViewController: UICollectionViewController {
     }
     */
 
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
+//
+//    // Uncomment this method to specify if the specified item should be selected
+//    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+//
+//        return true
+//    }
+    
 
     /*
     // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
@@ -90,5 +113,19 @@ class CollectionViewController: UICollectionViewController {
     
     }
     */
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        
+       // self.collectionView?.bounds = self.view.bounds
+        if UIApplication.shared.statusBarOrientation.isLandscape {
+             UIApplication.shared.isStatusBarHidden = false
+            print("1")
+           
+        } else {
+             UIApplication.shared.isStatusBarHidden = true
+        print("2")
+        }
+        self.collectionView?.updateConstraintsIfNeeded()
+    }
 
 }
